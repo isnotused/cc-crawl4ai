@@ -1,0 +1,6 @@
+# crawl4ai 已在父目录，直接从源码引用
+# pip install -e ..
+
+# LLM 接入（按需安装）
+anthropic>=0.40.0        # --llm claude
+openai>=1.0.0            # --llm openai / deepseek
