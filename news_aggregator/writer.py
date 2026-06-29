@@ -45,7 +45,10 @@ def _mock_article(news: dict[str, list[dict]], date: str) -> str:
     lines = [
         f"# {date} 热点新闻速览",
         "",
-        f"> 来源：微博热搜 / 今日头条 / 新浪新闻 / 网易新闻 / BBC中文",
+        f"> 来源：微博热搜 / 今日头条 / 新浪新闻 / 网易新闻 / BBC中文 / "
+        f"Reuters / BBC News / AP News / Bloomberg / Financial Times / CNBC / "
+        f"TechCrunch / The Verge / Wired / Science Daily / New Scientist / "
+        f"ESPN / BBC Sport / IGN / Kotaku / Polygon",
         "",
     ]
     for cat, items in news.items():

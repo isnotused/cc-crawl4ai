@@ -308,6 +308,7 @@ HANDOFF-*.md
 
 # Local pipeline/run output
 out/
+news_aggregator/output/
 
 # entrypoint.sh is a required deployment artifact (Dockerfile COPYs it)
 !deploy/docker/entrypoint.sh

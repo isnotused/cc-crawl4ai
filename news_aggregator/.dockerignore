@@ -1,0 +1,29 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*.pyc
+*.pyo
+
+# Generated output (lives on host volume, not in image)
+news_aggregator/output/
+
+# Git history
+.git/
+.gitignore
+
+# Docs and tests
+docs/
+tests/
+sbom/
+scripts/
+
+# Secrets
+.env
+.env.local
+.llm.env
+
+# Build artifacts
+*.egg-info/
+dist/
+build/
+uv.lock

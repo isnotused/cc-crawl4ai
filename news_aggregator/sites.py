@@ -151,4 +151,319 @@ SITES: list[SiteConfig] = [
             "a[href*='/zhongwen/']",
         ],
     ),
+
+    # ── Reuters ───────────────────────────────────────────────────────────────
+    SiteConfig(
+        name="Reuters",
+        url="https://www.reuters.com/",
+        wait_for="css:[data-testid='media-story-card']",
+        timeout=40,
+        scroll=True,
+        schema={
+            "name": "reuters",
+            "baseSelector": "[data-testid='media-story-card']",
+            "fields": [
+                {"name": "title",   "selector": "a[data-testid='Heading'] h3, a[data-testid='Heading']", "type": "text"},
+                {"name": "link",    "selector": "a[data-testid='Heading']", "type": "attribute", "attribute": "href"},
+                {"name": "summary", "selector": "p", "type": "text"},
+                {"name": "time",    "selector": "time", "type": "text"},
+            ],
+        },
+        fallback_selectors=["article[class*='story-card']", "main article", "main h3 a"],
+    ),
+
+    # ── BBC News ──────────────────────────────────────────────────────────────
+    SiteConfig(
+        name="BBC News",
+        url="https://www.bbc.com/news",
+        wait_for="css:[data-testid='edinburgh-article'], main article",
+        timeout=35,
+        schema={
+            "name": "bbc_news",
+            "baseSelector": "[data-testid='edinburgh-article']",
+            "fields": [
+                {"name": "title",   "selector": "h3[data-testid='card-headline'], h3", "type": "text"},
+                {"name": "link",    "selector": "a[data-testid='internal-link'], a",   "type": "attribute", "attribute": "href"},
+                {"name": "summary", "selector": "p[data-testid='card-description'], p","type": "text"},
+                {"name": "time",    "selector": "time", "type": "text"},
+            ],
+        },
+        fallback_selectors=["[data-testid='card-text-wrapper']", "main article", "main h3 a"],
+    ),
+
+    # ── AP News ───────────────────────────────────────────────────────────────
+    SiteConfig(
+        name="AP News",
+        url="https://apnews.com/",
+        wait_for="css:.PagePromo, .FeedCard",
+        timeout=30,
+        schema={
+            "name": "ap_news",
+            "baseSelector": ".PagePromo",
+            "fields": [
+                {"name": "title",   "selector": ".PagePromo-title a",        "type": "text"},
+                {"name": "link",    "selector": ".PagePromo-title a",        "type": "attribute", "attribute": "href"},
+                {"name": "summary", "selector": ".PagePromo-description p",  "type": "text"},
+                {"name": "time",    "selector": "bsp-timestamp, .Timestamp", "type": "text"},
+            ],
+        },
+        fallback_selectors=[".FeedCard", "article[data-key]", "main h2 a"],
+    ),
+
+    # ── Bloomberg ─────────────────────────────────────────────────────────────
+    # Cloudflare 保护较强，CSS 抽取失败率高，markdown 兜底是主要路径
+    SiteConfig(
+        name="Bloomberg",
+        url="https://www.bloomberg.com/",
+        wait_for="css:[data-type='story'], main article",
+        timeout=45,
+        scroll=True,
+        schema={
+            "name": "bloomberg",
+            "baseSelector": "[data-type='story']",
+            "fields": [
+                {"name": "title", "selector": "[class*='headline'], h3, h2", "type": "text"},
+                {"name": "link",  "selector": "a", "type": "attribute", "attribute": "href"},
+                {"name": "time",  "selector": "time", "type": "text"},
+            ],
+        },
+        fallback_selectors=["[class*='story-package'] article", "[class*='story-list'] li", "main article"],
+    ),
+
+    # ── Financial Times ───────────────────────────────────────────────────────
+    # 使用 Origami 设计系统，类名较稳定
+    SiteConfig(
+        name="Financial Times",
+        url="https://www.ft.com/",
+        wait_for="css:.js-stream-article, [data-trackable]",
+        timeout=40,
+        schema={
+            "name": "financial_times",
+            "baseSelector": ".js-stream-article",
+            "fields": [
+                {"name": "title",   "selector": ".o-teaser__heading a, h2 a",    "type": "text"},
+                {"name": "link",    "selector": ".o-teaser__heading a, h2 a",    "type": "attribute", "attribute": "href"},
+                {"name": "summary", "selector": ".o-teaser__standfirst, p",      "type": "text"},
+                {"name": "time",    "selector": "time, .o-date",                 "type": "text"},
+            ],
+        },
+        fallback_selectors=["[data-trackable='article-teaser']", "article[class*='teaser']", "main h2 a"],
+    ),
+
+    # ── CNBC ──────────────────────────────────────────────────────────────────
+    SiteConfig(
+        name="CNBC",
+        url="https://www.cnbc.com/",
+        wait_for="css:[class*='Card-titleContainer'], [class*='RiverHeadline']",
+        timeout=35,
+        scroll=True,
+        schema={
+            "name": "cnbc",
+            "baseSelector": "[class*='Card-titleContainer']",
+            "fields": [
+                {"name": "title",   "selector": "a",                           "type": "text"},
+                {"name": "link",    "selector": "a",                           "type": "attribute", "attribute": "href"},
+                {"name": "summary", "selector": "[class*='Card-description']", "type": "text"},
+                {"name": "time",    "selector": "[class*='Card-time'], time",  "type": "text"},
+            ],
+        },
+        fallback_selectors=["[class*='RiverHeadline']", "article h2 a", ".LatestNews__headline a"],
+    ),
+
+    # ── TechCrunch ────────────────────────────────────────────────────────────
+    SiteConfig(
+        name="TechCrunch",
+        url="https://techcrunch.com/",
+        wait_for="css:article.loop-card, .post-block",
+        timeout=30,
+        schema={
+            "name": "techcrunch",
+            "baseSelector": "article.loop-card",
+            "fields": [
+                {"name": "title",   "selector": "h2.loop-card__title a, h2 a",     "type": "text"},
+                {"name": "link",    "selector": "h2.loop-card__title a, h2 a",     "type": "attribute", "attribute": "href"},
+                {"name": "summary", "selector": ".loop-card__description, p",      "type": "text"},
+                {"name": "time",    "selector": "time",                             "type": "text"},
+            ],
+        },
+        fallback_selectors=["article.post-block", ".post-block", "article h2 a"],
+    ),
+
+    # ── The Verge ─────────────────────────────────────────────────────────────
+    # Vox Media Chorus CMS，2022 年改版后使用 atomic CSS
+    SiteConfig(
+        name="The Verge",
+        url="https://www.theverge.com/",
+        wait_for="css:.duet--content-cards--content-card, article",
+        timeout=35,
+        scroll=True,
+        schema={
+            "name": "the_verge",
+            "baseSelector": ".duet--content-cards--content-card",
+            "fields": [
+                {"name": "title",   "selector": "h2 a, h3 a", "type": "text"},
+                {"name": "link",    "selector": "h2 a, h3 a", "type": "attribute", "attribute": "href"},
+                {"name": "summary", "selector": "p",           "type": "text"},
+                {"name": "time",    "selector": "time",        "type": "text"},
+            ],
+        },
+        fallback_selectors=["article", "h2[class*='font-bold'] a", "main h2 a"],
+    ),
+
+    # ── Wired ─────────────────────────────────────────────────────────────────
+    # Next.js + styled-components，类名含 SummaryItem 前缀
+    SiteConfig(
+        name="Wired",
+        url="https://www.wired.com/",
+        wait_for="css:[class*='SummaryItemWrapper'], [class*='SummaryItem']",
+        timeout=35,
+        scroll=True,
+        schema={
+            "name": "wired",
+            "baseSelector": "[class*='SummaryItemWrapper']",
+            "fields": [
+                {"name": "title",   "selector": "[class*='SummaryItemHedLink'], h2 a", "type": "text"},
+                {"name": "link",    "selector": "[class*='SummaryItemHedLink'], h2 a", "type": "attribute", "attribute": "href"},
+                {"name": "summary", "selector": "[class*='SummaryItemDek'], p",        "type": "text"},
+                {"name": "time",    "selector": "time",                                 "type": "text"},
+            ],
+        },
+        fallback_selectors=["[class*='SummaryItem']", "article", "main h2 a"],
+    ),
+
+    # ── Science Daily ─────────────────────────────────────────────────────────
+    # 传统 PHP 站点，结构稳定，#latest_news 下的 .story 列表
+    SiteConfig(
+        name="Science Daily",
+        url="https://www.sciencedaily.com/",
+        wait_for="css:#latest_news .story, .latest .story",
+        timeout=30,
+        schema={
+            "name": "science_daily",
+            "baseSelector": "#latest_news .story",
+            "fields": [
+                {"name": "title",   "selector": "h3 a",               "type": "text"},
+                {"name": "link",    "selector": "h3 a",               "type": "attribute", "attribute": "href"},
+                {"name": "summary", "selector": "p:not(.text-muted)", "type": "text"},
+                {"name": "time",    "selector": ".text-muted",        "type": "text"},
+            ],
+        },
+        fallback_selectors=[".latest .story", "#featured_news article", "main h3 a"],
+    ),
+
+    # ── New Scientist ─────────────────────────────────────────────────────────
+    SiteConfig(
+        name="New Scientist",
+        url="https://www.newscientist.com/",
+        wait_for="css:[class*='CardBase'], article",
+        timeout=35,
+        schema={
+            "name": "new_scientist",
+            "baseSelector": "article[class*='CardBase'], article",
+            "fields": [
+                {"name": "title",   "selector": "h3 a, h2 a", "type": "text"},
+                {"name": "link",    "selector": "h3 a, h2 a", "type": "attribute", "attribute": "href"},
+                {"name": "summary", "selector": "p",           "type": "text"},
+                {"name": "time",    "selector": "time",        "type": "text"},
+            ],
+        },
+        fallback_selectors=["[class*='article-card']", "[class*='CardBase']", "main article h3 a"],
+    ),
+
+    # ── ESPN ──────────────────────────────────────────────────────────────────
+    SiteConfig(
+        name="ESPN",
+        url="https://www.espn.com/",
+        wait_for="css:.headlineStack__list, [class*='contentItem']",
+        timeout=45,
+        scroll=True,
+        schema={
+            "name": "espn",
+            "baseSelector": ".headlineStack__list .headlineStack__item",
+            "fields": [
+                {"name": "title", "selector": "a", "type": "text"},
+                {"name": "link",  "selector": "a", "type": "attribute", "attribute": "href"},
+            ],
+        },
+        fallback_selectors=["[class*='contentItem']", "[class*='news__item']", "main article h2 a"],
+    ),
+
+    # ── BBC Sport ─────────────────────────────────────────────────────────────
+    SiteConfig(
+        name="BBC Sport",
+        url="https://www.bbc.com/sport",
+        wait_for="css:[data-testid='card-text-wrapper'], main article",
+        timeout=35,
+        schema={
+            "name": "bbc_sport",
+            "baseSelector": "[data-testid='card-text-wrapper']",
+            "fields": [
+                {"name": "title",   "selector": "h3[data-testid='card-headline'], h3",    "type": "text"},
+                {"name": "link",    "selector": "a[data-testid='internal-link'], a",      "type": "attribute", "attribute": "href"},
+                {"name": "summary", "selector": "p[data-testid='card-description'], p",  "type": "text"},
+                {"name": "time",    "selector": "time",                                    "type": "text"},
+            ],
+        },
+        fallback_selectors=["[data-testid='edinburgh-article']", "main article", "main h3 a[href*='/sport/']"],
+    ),
+
+    # ── IGN ───────────────────────────────────────────────────────────────────
+    SiteConfig(
+        name="IGN",
+        url="https://www.ign.com/",
+        wait_for="css:.item, [class*='content-item']",
+        timeout=35,
+        scroll=True,
+        schema={
+            "name": "ign",
+            "baseSelector": ".item",
+            "fields": [
+                {"name": "title",   "selector": "a.item-title, h3 a", "type": "text"},
+                {"name": "link",    "selector": "a.item-title, h3 a", "type": "attribute", "attribute": "href"},
+                {"name": "summary", "selector": ".item-summary, p",   "type": "text"},
+                {"name": "time",    "selector": "time",                "type": "text"},
+            ],
+        },
+        fallback_selectors=["[class*='content-item']", "article", "main h3 a"],
+    ),
+
+    # ── Kotaku ────────────────────────────────────────────────────────────────
+    # G/O Media CMS 类名混淆，用语义化 article[data-id] 更稳定
+    SiteConfig(
+        name="Kotaku",
+        url="https://kotaku.com/",
+        wait_for="css:article[data-id], article",
+        timeout=35,
+        schema={
+            "name": "kotaku",
+            "baseSelector": "article[data-id]",
+            "fields": [
+                {"name": "title",   "selector": "h2 a, h1 a", "type": "text"},
+                {"name": "link",    "selector": "h2 a, h1 a", "type": "attribute", "attribute": "href"},
+                {"name": "summary", "selector": "p",           "type": "text"},
+                {"name": "time",    "selector": "time",        "type": "text"},
+            ],
+        },
+        fallback_selectors=[".js-curation-placement article", "[class*='storyWrapper']", "main h2 a"],
+    ),
+
+    # ── Polygon ───────────────────────────────────────────────────────────────
+    # Vox Media Chorus CMS，.c-entry-box 是有文档记录的官方类名
+    SiteConfig(
+        name="Polygon",
+        url="https://www.polygon.com/",
+        wait_for="css:.c-entry-box, article",
+        timeout=35,
+        schema={
+            "name": "polygon",
+            "baseSelector": ".c-entry-box--compact",
+            "fields": [
+                {"name": "title",   "selector": "h2.c-entry-box--compact__title a, h2 a", "type": "text"},
+                {"name": "link",    "selector": "h2.c-entry-box--compact__title a, h2 a", "type": "attribute", "attribute": "href"},
+                {"name": "summary", "selector": ".c-entry-box--compact__dek, p",           "type": "text"},
+                {"name": "time",    "selector": "time",                                     "type": "text"},
+            ],
+        },
+        fallback_selectors=[".c-entry-box", "article", "main h2 a"],
+    ),
 ]

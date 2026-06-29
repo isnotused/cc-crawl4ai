@@ -77,33 +77,76 @@ _CATEGORIES: list[tuple[str, list[str]]] = [
         "法国", "德国", "印度", "以色列", "巴勒斯坦", "加沙", "伊朗", "BBC", "联合国",
         "NATO", "北约", "白宫", "普京", "特朗普", "拜登", "外交", "大使馆", "G7",
         "欧盟", "台海", "南海", "援助", "制裁", "签证", "海外",
+        # English terms for international sites (Reuters, BBC News, AP News)
+        "US", "EU", "UK", "Russia", "Ukraine", "NATO", "UN", "Israel", "Gaza",
+        "Iran", "election", "minister", "president", "diplomacy", "sanctions",
+        "Reuters", "AP News", "BBC News", "White House", "Pentagon",
+        "war", "conflict", "parliament", "treaty",
     ]),
     ("科技", [
         "AI", "人工智能", "芯片", "半导体", "手机", "苹果", "iPhone", "华为", "小米",
         "字节", "腾讯", "阿里", "百度", "OpenAI", "ChatGPT", "大模型", "机器人",
         "算力", "英伟达", "特斯拉", "马斯克", "自动驾驶", "新能源车", "卫星", "航天",
         "量子", "开源", "操作系统", "鸿蒙", "元宇宙", "互联网",
+        # English terms for tech sites (TechCrunch, Verge, Wired, CNBC)
+        "chip", "Apple", "Google", "Microsoft", "Meta", "Amazon", "OpenAI",
+        "startup", "software", "hardware", "cloud", "Android", "robot",
+        "algorithm", "TechCrunch", "Verge", "Wired", "CNBC",
     ]),
     ("财经", [
         "股市", "A股", "港股", "美股", "基金", "楼市", "房价", "经济", "GDP", "通胀",
         "美联储", "央行", "降息", "加息", "人民币", "美元", "黄金", "石油", "原油",
         "融资", "IPO", "营收", "利润", "财报", "裁员", "失业", "消费", "出口", "关税",
         "比特币", "加密货币", "债务",
+        # English terms for finance sites (Bloomberg, FT, CNBC)
+        "stock", "market", "economy", "inflation", "Fed", "Federal Reserve",
+        "interest rate", "investment", "IPO", "earnings", "revenue", "layoffs",
+        "crypto", "bitcoin", "dollar", "euro", "trade", "tariff",
+        "merger", "acquisition", "Bloomberg", "FT",
     ]),
     ("社会", [
         "事故", "案件", "嫌疑人", "警方", "法院", "判决", "起诉", "救援", "地震",
         "洪水", "暴雨", "台风", "高温", "火灾", "爆炸", "坠落", "疫情", "病例", "医院",
         "学校", "高考", "中考", "招聘", "养老", "社保", "诈骗", "失踪", "遇难", "曝光",
+        # English terms for general news
+        "accident", "crime", "police", "court", "arrest", "disaster",
+        "earthquake", "flood", "fire", "health", "hospital", "school",
+        "university", "vaccine", "pandemic", "climate",
     ]),
     ("体育", [
         "足球", "篮球", "NBA", "CBA", "奥运", "亚运", "世界杯", "欧洲杯", "冠军",
         "夺冠", "比赛", "赛事", "决赛", "运动员", "教练", "国足", "梅西", "C罗", "网球",
         "乒乓", "羽毛球", "田径", "游泳", "马拉松", "破纪录",
+        # English terms for sports sites (ESPN, BBC Sport)
+        "soccer", "football", "basketball", "baseball", "tennis", "golf",
+        "Olympics", "World Cup", "championship", "Super Bowl",
+        "NFL", "NBA", "Premier League", "UEFA", "FIFA",
+        "ESPN", "BBC Sport",
+    ]),
+    ("科学", [
+        "科学", "研究", "发现", "实验", "宇宙", "太空", "基因", "气候", "物理", "化学",
+        "生物", "进化", "化石", "行星", "NASA", "ESA",
+        # English terms for science sites (Science Daily, New Scientist)
+        "study", "research", "scientists", "discovery", "space", "NASA", "ESA",
+        "gene", "climate", "species", "physics", "chemistry", "biology",
+        "experiment", "Nature", "cell", "protein", "brain", "fossil", "planet",
+        "universe", "Science Daily", "New Scientist", "quantum", "telescope", "genome",
     ]),
     ("娱乐", [
         "电影", "明星", "综艺", "音乐", "演唱会", "票房", "剧情", "热播", "电视剧",
         "导演", "演员", "歌手", "偶像", "粉丝", "官宣", "恋情", "结婚", "离婚", "出轨",
         "塌房", "首映", "新歌", "专辑", "红毯", "颁奖",
+        # English terms for entertainment
+        "movie", "film", "music", "celebrity", "actor", "actress", "singer",
+        "album", "Oscar", "Grammy", "concert", "Netflix", "streaming", "box office",
+    ]),
+    ("游戏", [
+        "游戏", "电竞", "主机", "手游", "网游", "Steam", "Xbox", "PlayStation", "任天堂",
+        # English terms for gaming sites (IGN, Kotaku, Polygon)
+        "game", "gaming", "Xbox", "PlayStation", "Nintendo", "Steam", "Valve",
+        "RPG", "shooter", "esports", "Twitch", "DLC", "patch",
+        "IGN", "Kotaku", "Polygon", "console", "PC gaming", "multiplayer",
+        "Minecraft", "Fortnite", "review", "release",
     ]),
 ]
 

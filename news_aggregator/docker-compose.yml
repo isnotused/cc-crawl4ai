@@ -1,0 +1,17 @@
+services:
+  news-aggregator:
+    build:
+      context: ..
+      dockerfile: news_aggregator/Dockerfile
+    env_file:
+      - .env
+    volumes:
+      - ./output:/app/news_aggregator/output
+    shm_size: "1gb"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 512M
