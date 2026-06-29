@@ -121,16 +121,55 @@ def _items_from_markdown(markdown_text: str, site: SiteConfig, max_items: int) -
     if not markdown_text:
         return []
 
+    # English nav terms (lowercase); checked case-insensitively
+    _EN_NAV_CONTAINS = (
+        "skip to", "sign in", "sign up", "log in", "log out",
+        "subscribe", "register", "newsletter", "follow us",
+        "read more", "more stories", "more news", "load more",
+        "cookie", "privacy policy", "terms of service",
+    )
+    _EN_NAV_EXACT = {
+        "home", "news", "sport", "travel", "culture", "menu", "search",
+        "health", "science", "technology", "business", "entertainment",
+        "africa", "asia", "europe", "americas", "middle east",
+        "world", "uk", "us", "video", "audio", "weather", "radio",
+        # IGN / gaming nav
+        "playstation", "xbox", "nintendo", "pc", "movies", "tv", "comics",
+        "reviews", "previews", "videos", "wikis", "features",
+    }
+
+    # Normalize image-linked articles before main parse:
+    #   [![alt text](imgurl)](article_url)  →  [alt text](article_url)
+    # This preserves the article URL (not the image URL) as the link target.
+    markdown_text = re.sub(r'\[!\[([^\]]+)\]\([^)]+\)\]', r'[\1]', markdown_text)
+
     link_pattern = re.compile(r"\[([^\]\n]+?)\]\((https?://[^)\s]+|/[^)\s]+)\)")
     seen_titles: set[str] = set()
     news: list[dict] = []
+    _img_ext = re.compile(r'\.(jpe?g|png|gif|webp|svg|avif)(\?[^)\s]*)?$', re.IGNORECASE)
+
     for match in link_pattern.finditer(markdown_text):
         title = match.group(1).strip()
         link = match.group(2).strip()
-        # 过滤：过短标题、纯符号、常见导航词
-        if len(title) < 6:
+        # Skip image file URLs — never a valid article link (IGN/media fallback artifact)
+        if _img_ext.search(link):
+            continue
+        # Strip image markdown prefix captured as part of title: "![alt text" → "alt text"
+        if title.startswith("!["):
+            title = title[2:].strip()
+        if not title:
+            continue
+        # 对英文标题（ASCII 占比 > 70%）要求更长的最小长度，以过滤单词导航项
+        is_english = sum(1 for c in title if ord(c) < 128) / max(len(title), 1) > 0.7
+        min_len = 20 if is_english else 6
+        if len(title) < min_len:
             continue
         if title in seen_titles:
+            continue
+        tl = title.lower()
+        if any(w in tl for w in _EN_NAV_CONTAINS):
+            continue
+        if tl in _EN_NAV_EXACT:
             continue
         if any(w in title for w in ("登录", "注册", "下载", "客户端", "更多", "首页", "APP")):
             continue

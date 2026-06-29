@@ -173,22 +173,27 @@ SITES: list[SiteConfig] = [
     ),
 
     # ── BBC News ──────────────────────────────────────────────────────────────
+    # 直接锁定指向正文文章的内部链接（与 BBC中文 策略一致），比依赖容器类名更稳健
     SiteConfig(
         name="BBC News",
         url="https://www.bbc.com/news",
-        wait_for="css:[data-testid='edinburgh-article'], main article",
+        wait_for="css:main a[href*='/news/articles/']",
         timeout=35,
         schema={
             "name": "bbc_news",
-            "baseSelector": "[data-testid='edinburgh-article']",
+            "baseSelector": "main a[href*='/news/articles/']",
             "fields": [
-                {"name": "title",   "selector": "h3[data-testid='card-headline'], h3", "type": "text"},
-                {"name": "link",    "selector": "a[data-testid='internal-link'], a",   "type": "attribute", "attribute": "href"},
-                {"name": "summary", "selector": "p[data-testid='card-description'], p","type": "text"},
-                {"name": "time",    "selector": "time", "type": "text"},
+                {"name": "title",   "selector": "h3, h2, p[class*='headline'], span", "type": "text"},
+                {"name": "link",    "type": "attribute", "attribute": "href"},
+                {"name": "summary", "selector": "p[data-testid='card-description']",  "type": "text"},
+                {"name": "time",    "selector": "time",                                "type": "text"},
             ],
         },
-        fallback_selectors=["[data-testid='card-text-wrapper']", "main article", "main h3 a"],
+        fallback_selectors=[
+            "[data-testid='edinburgh-article']",
+            "[data-testid='card-text-wrapper']",
+            "main article",
+        ],
     ),
 
     # ── AP News ───────────────────────────────────────────────────────────────
@@ -408,23 +413,28 @@ SITES: list[SiteConfig] = [
     ),
 
     # ── IGN ───────────────────────────────────────────────────────────────────
+    # .item 过于宽泛会匹配导航过滤按钮，改用 main 区域内的 article 语义标签
     SiteConfig(
         name="IGN",
         url="https://www.ign.com/",
-        wait_for="css:.item, [class*='content-item']",
-        timeout=35,
+        wait_for="css:main article, [class*='content-item']",
+        timeout=40,
         scroll=True,
         schema={
             "name": "ign",
-            "baseSelector": ".item",
+            "baseSelector": "main article",
             "fields": [
-                {"name": "title",   "selector": "a.item-title, h3 a", "type": "text"},
-                {"name": "link",    "selector": "a.item-title, h3 a", "type": "attribute", "attribute": "href"},
-                {"name": "summary", "selector": ".item-summary, p",   "type": "text"},
+                {"name": "title",   "selector": "h2 a, h3 a, h4 a",  "type": "text"},
+                {"name": "link",    "selector": "h2 a, h3 a, h4 a",  "type": "attribute", "attribute": "href"},
+                {"name": "summary", "selector": "p",                   "type": "text"},
                 {"name": "time",    "selector": "time",                "type": "text"},
             ],
         },
-        fallback_selectors=["[class*='content-item']", "article", "main h3 a"],
+        fallback_selectors=[
+            "[class*='content-item']",
+            "[class*='item-body']",
+            "main a[href*='/articles/']",
+        ],
     ),
 
     # ── Kotaku ────────────────────────────────────────────────────────────────
